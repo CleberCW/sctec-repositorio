@@ -1,3 +1,8 @@
+const { appendFile } = require("node:fs");
+const readline = require("node:readline");
+const readlinePromises = require("node:readline/promises");
+const { stdin, stdout } = require("process");
+
 async function main() {
   const rl = readlinePromises.createInterface(stdin, stdout);
 
@@ -12,6 +17,8 @@ async function main() {
   const response = await fetchPromise;
 
   clearInterval(interval);
+
+  console.log(response);
 
   rl.close();
 }

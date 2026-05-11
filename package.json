@@ -1,14 +1,15 @@
 {
   "name": "projeto",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/main.js"
+    "start": "node ./src/main.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
-  "type": "module"
+  "dependencies": {
+    "node": "^26.1.0"
+  }
 }
