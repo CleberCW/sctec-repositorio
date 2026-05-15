@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "src/main.js",
   "scripts": {
-    "start": "node ./src/main.js"
+    "calculadora": "node ./apps/desafioCalculadora/src/main.js",
+    "githubSearcher": "node ./apps/desafioGithub/src/main.js"
   },
   "keywords": [],
   "author": "",
