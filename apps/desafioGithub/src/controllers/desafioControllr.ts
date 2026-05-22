@@ -1,12 +1,14 @@
 import { buscarUsuario } from "../services/githubService.js";
 import { showDevGithub, showTeam } from "../views/terminalView.js";
 import {
-  lerArquivo,
   salvarUsuario,
   removerUsuarioDaBase,
 } from "../services/databaseService.js";
+import { Interface } from "readline/promises";
 
-export async function menuController(interfaceConsole) {
+export async function menuController(
+  interfaceConsole: Interface,
+): Promise<boolean> {
   let running = true;
 
   while (running) {
@@ -23,7 +25,7 @@ export async function menuController(interfaceConsole) {
     console.log("==========================\n");
 
     const respostaOperação = await interfaceConsole.question(
-      "Digite a opção escolhida:\n", // \n - Quebra de linha
+      "Digite a opção escolhida:\n",
     );
 
     switch (respostaOperação) {
@@ -39,14 +41,45 @@ export async function menuController(interfaceConsole) {
 
         if (usuario) {
           respostaUser = await interfaceConsole.question(
-            "Deseja adicionar esse desenvolvedor à equipe? (S/N)\:\n", // \n - Quebra de linha
+            "Deseja adicionar esse desenvolvedor à equipe? (S/N)\:\n",
           );
           do {
             if (respostaUser.toUpperCase() === "S") {
-              await salvarUsuario(usuario);
-              await interfaceConsole.question(
-                "Pressione enter para prosseguir...",
-              );
+              let resposta: any = await salvarUsuario(usuario);
+              if (resposta instanceof Error) {
+                if (resposta.name === "ArquivoNaoEncontradoError") {
+                  const createFile = await interfaceConsole.question(
+                    "Database não encontrado. Deseja criar uma nova base de dados? (S/N)\n",
+                  );
+                  if (createFile.toUpperCase() === "S") {
+                    await salvarUsuario(usuario, true);
+                  }
+                  await interfaceConsole.question(
+                    "Pressione enter para prosseguir...",
+                  );
+                }
+
+                if (resposta.name === "ArquivoCorrompidoError") {
+                  const createFile = await interfaceConsole.question(
+                    "Database corrompido. Deseja criar uma nova base de dados? (S/N)\n",
+                  );
+                  if (createFile.toUpperCase() === "S") {
+                    await salvarUsuario(usuario, true);
+                  }
+                  await interfaceConsole.question(
+                    "Pressione enter para prosseguir...",
+                  );
+                }
+
+                console.log(
+                  "Erro não identificado. Algo de errado não está certo...",
+                );
+
+                await interfaceConsole.question(
+                  "Pressione enter para prosseguir...",
+                );
+                break;
+              }
               break;
             }
             if (respostaUser.toUpperCase() === "N") {
@@ -79,4 +112,5 @@ export async function menuController(interfaceConsole) {
         break;
     }
   }
+  return running;
 }

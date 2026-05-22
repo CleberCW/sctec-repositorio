@@ -1,4 +1,4 @@
-export async function buscarUsuario(username) {
+export async function buscarUsuario(username: string) {
   const urlBase = "https://api.github.com/users/";
 
   try {
